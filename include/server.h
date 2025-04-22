@@ -34,7 +34,7 @@ public:
 					std::shared_ptr<ChatContext> chatContext = nullptr;
 					while (true) {
 						try {
-							auto res = clientPtr->receive(1024);
+							auto res = clientPtr->receive(1024 * 8);
 	 						json msg = json::parse(res);
 							std::cout << "Received message: >>>>>" << msg["method"] << std::endl;
 							if(msg["method"] == "chat") {
