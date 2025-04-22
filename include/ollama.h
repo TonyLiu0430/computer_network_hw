@@ -20,12 +20,31 @@ public:
    }
 
    void init(std::string model) {
-	   body["model"] = model;
+	   body["model"] = "gemma3:12b-it-qat";
 	   body["messages"] = json::array();
 	   json systemPrompt;
 	   systemPrompt["role"] = "system";
-	   systemPrompt["content"] = "請使用繁體中文回覆問題，並且不需要使用 markdown 語法、回答盡量減短，語氣可愛一點，請遵守使用者的要求。";
+	   systemPrompt["content"] = "請使用繁體中文回覆問題，並且不需要使用 markdown 語法、回答盡量減短，語氣可愛一點。";
 	   body["messages"].push_back(systemPrompt);
+   }
+
+   static std::string chatNoRecord(std::string model, std::string prompt, std::string systemPrompt = "") {
+        HttpClient http;
+        http.connect("127.0.0.1", 11434);
+        
+        json body;
+        body["model"] = "gemma3:12b-it-qat";
+        body["prompt"] = prompt;
+        body["stream"] = false;
+        if (systemPrompt != "") {
+            body["system"] = systemPrompt;
+        }
+
+        auto resp = http.post("/api/generate", body);
+        
+        json jsonResp = json::parse(resp.body);
+
+        return jsonResp["response"];
    }
 
    std::string chat(std::string prompt) {

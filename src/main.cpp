@@ -38,7 +38,6 @@ int main() {
 	std::set_terminate(msvc_terminate_handler);
     #endif
 	
-	
 	/*detail::inner_t<std::vector<int>, std::vector> v = 10;
 	std::cout << v << std::endl;
 	return 0;*/
@@ -62,6 +61,7 @@ int main() {
 			std::cout << "error" << std::endl;
 		}
 	}
+
 	
 
 

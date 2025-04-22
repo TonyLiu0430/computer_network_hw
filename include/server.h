@@ -38,21 +38,12 @@ public:
 	 						json msg = json::parse(res);
 							std::cout << "Received message: >>>>>" << msg["method"] << std::endl;
 							if(msg["method"] == "chat") {
-								std::unique_ptr<OllamaClient> ollamaClient{};
-								if (chatContext == nullptr) {
-									HistoryService& historyService = HistoryService::getInstance();
-									chatContext = historyService.getNewContext();
-									ollamaClient = std::make_unique<OllamaClient>(chatContext);
-									ollamaClient->init("gemma3:12b-it-qat");
-								}
-								else {
-									ollamaClient = std::make_unique<OllamaClient>(chatContext);
-								}
-
+								HistoryService& historyService = HistoryService::getInstance();
+								OllamaClient ollamaClient(historyService.getContext(msg["content"]["id"]));
 								json resp;
 								resp["type"] = "Chunked";
 								clientPtr->send(to_string(resp) + "\n");
-								auto stream = ollamaClient->chatStream(msg["content"]["message"]);
+								auto stream = ollamaClient.chatStream(msg["content"]["message"]);
 
 								for (std::string line : stream) {
 									std::cout << line << std::endl;
@@ -76,18 +67,45 @@ public:
 								std::cout << "getChatHistories" << std::endl;
 								HistoryService& historyService = HistoryService::getInstance();
 								json response = json::array();
-								for (auto& [key, value] : historyService.chatHistories) {
-									json chatHistory;
-									chatHistory["id"] = key;
-									chatHistory["title"] = std::to_string(key);
-									response.push_back(chatHistory);
+								for (auto& record : historyService.getHistories()) {
+									response.push_back(record);
 								}
-								std::cout << "getChatHistories response: " << response.dump() << std::endl;
+								std::cout << response.dump() << std::endl;
 								clientPtr->send(to_string(response) + "\n");
 							}
-							
+							else if (msg["method"] == "createChat") {
+								HistoryService& historyService = HistoryService::getInstance();
+								auto [newContext, id] = historyService.getNewContext();
+								OllamaClient ollamaClient(newContext);
+								ollamaClient.init("gemma3:12b-it-qat");
+								json response;
+								response["id"] = id;
+								clientPtr->send(to_string(response) + "\n");
+							}
+							else if(msg["method"] == "getHistory") {
+								HistoryService& historyService = HistoryService::getInstance();
+								auto chatContext = historyService.getContext(msg["content"]["id"]);
+								json response = json::array();
+								for (auto& message : (*chatContext)["messages"]) {
+									//data class ChatMessage(val message: String, val sender : Sender)
+									json chatMessage;
+									chatMessage["message"] = message["content"];
+									if(message["role"] == "user") {
+										chatMessage["sender"] = "USER";
+									}
+									else if(message["role"] == "assistant") {
+										chatMessage["sender"] = "BOT";
+									}
+									else {
+										continue;
+									}
+									response.push_back(chatMessage);
+								}
+								clientPtr->send(to_string(response) + "\n");
+							}
 						}
 						catch (std::exception &e) {
+							std::cout << std::stacktrace::current() << '\n';
 							std::cout << "Client disconnected " << e.what() << std::endl;
 							break;
 						}
