@@ -104,7 +104,12 @@ public:
 	//	}
 	//}
 
-
+    void make_keep_alive(bool open = true) {
+        int optval = open;
+        if (setsockopt(sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) == -1) {
+            throw std::runtime_error("Error: set socket to keep alive mode");
+        }
+    }
 
     template<typename T>
     void send(const T &data) {
@@ -186,7 +191,9 @@ public:
 
         /*char client_ip[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, sizeof(client_ip));*/
-        return SocketClient(new_sock);
+        auto socketClient = SocketClient(new_sock);
+        socketClient.make_keep_alive(1);
+        return socketClient;
     }
 };
 
