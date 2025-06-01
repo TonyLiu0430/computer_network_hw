@@ -132,51 +132,5 @@ int main() {
 			std::cout << "error" << std::endl;
 		}
 	}
-
-	
-
-
-	//throw std::runtime_error("test error");
-
-	//HttpClient http;
-	//http.connect("127.0.0.1", 11434);
-
-	//json body;
-	//body["model"] = "gemma3:12b";
-	//
-	//body["messages"] = json::array();
-
-	//json systemPrompt;
-	//systemPrompt["role"] = "system";
-	//systemPrompt["content"] = "請使用繁體中文回覆問題，並且不需要使用 markdown 語法。";
-	//body["messages"].push_back(systemPrompt);
-
- //  std::cout << body.dump() << std::endl;
-
-	//std::string prompt;
-	//while (1) {
-	//	std::cout << "\n>>>>";
-	//	std::cin >> prompt;
-
-	//	json message;
-	//	message["role"] = "user";
-	//	message["content"] = prompt;
-	//	body["messages"].push_back(message);
-
-	//	auto res = http.post("/api/chat", body);
-	//	if (res.chunkedBody) {
-	//		std::string allResponse;
-	//		for (std::string line : *res.chunkedBody) {
-	//			json jsonLine = json::parse(line);
-	//			std::cout << std::string(jsonLine["message"]["content"]);
-	//			allResponse += jsonLine["message"]["content"];
-	//		}
-	//		json response;
-	//		response["role"] = "assistant";
-	//		response["content"] = allResponse;
-	//		body["messages"].push_back(response);
-	//	}
-	//}
-	
 	
 }

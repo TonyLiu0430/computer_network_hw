@@ -25,24 +25,6 @@ public:
 	   body["messages"].push_back(systemPrompt);
    }
 
-   //static std::string chatNoRecord(std::string model, std::string prompt, std::string systemPrompt = "") {
-   //     HttpClient http;
-   //     http.connect("127.0.0.1", 11434);
-   //     
-   //     json body;
-   //     body["model"] = "gemma3:12b-it-qat";
-   //     body["prompt"] = prompt;
-   //     body["stream"] = false;
-   //     if (systemPrompt != "") {
-   //         body["system"] = systemPrompt;
-   //     }
-
-   //     auto resp = http.post("/api/generate", body);
-   //     
-   //     json jsonResp = json::parse(resp.body);
-
-   //     return jsonResp["response"];
-   //}
     std::string chatNoRecord(std::string prompt) const {
         HttpClient http;
         http.connect("127.0.0.1", 11434);
