@@ -1,7 +1,5 @@
 {
   "dependencies": [
-    "boost-pfr",
-    "nlohmann-json",
-    "cppcoro"
+    "nlohmann-json"
   ]
 }
