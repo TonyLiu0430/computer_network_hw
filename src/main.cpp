@@ -8,7 +8,6 @@
 #include <codecvt>
 #include <nlohmann/json.hpp>
 #include <stacktrace>
-#include "detail.h"
 #include "ollama.h"
 #include <server.h>
 #include <env.h>

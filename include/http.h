@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <generator>
 #include <nlohmann/json.hpp>
-#include "detail.h"
 using json = nlohmann::json;
 
 
@@ -29,31 +28,6 @@ public:
 	}
 };
 
-class HttpResponseNew {
-public:
-	const std::unordered_map<std::string, std::string> headers;
-	const int statusCode = 0;
-	const std::string statusMessage;
-	const std::string httpVersion;
-	void dump() {
-		std::println("{} {} {}", httpVersion, statusCode, statusMessage);
-		for (const auto& header : headers) {
-			std::println("{}: {}", header.first, header.second);
-		}
-		std::println("");
-		std::cout << body<std::string>() << std::endl;
-	}
-	template<typename T>
-	T body();
-
-	template<typename T> requires std::same_as<T, std::string>
-	T body() {
-		
-	}
-	//template<typename T> requires detail::inner_t<T, std::generator>
-//private:
-
-};
 
 class HttpClient {
 	BufferedSocketClient socketClient;
